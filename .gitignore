@@ -1,2 +1,8 @@
-/Builds*
-/Debug*
+Builds*/
+Debug*/
+bin/
+obj/
+install/
+.vs/
+*.user
+*Backup.csproj
