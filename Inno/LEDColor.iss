@@ -50,8 +50,8 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingD
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "schtasks"; Parameters: "/create /tn LEDColor /xml ""{tmp}\LEDColor.xml"""
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent runascurrentuser
+Filename: "schtasks"; Parameters: "/create /tn LEDColor /xml ""{tmp}\LEDColor.xml"""
 
 [UninstallRun]
 Filename: "schtasks"; Parameters: "/delete /tn LEDColor /f"; RunOnceId: "DeleteSchedule"
