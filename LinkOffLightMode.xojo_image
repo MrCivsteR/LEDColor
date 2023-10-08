@@ -1,0 +1,40 @@
+#tag MultiImage
+Image LinkOffLightMode
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABLQzpcVXNlcnNcUm90Y2l2XERyb3Bib3hcRGV2ZWxvcGVkIEFwcHNcTEVEQ29sb3JcSW1hZ2VzXExpbmtPZmZMaWdodE1vZGUucG5nAwAAAAABAAQAAAAAAQAAAAAAAAA=
+		FullPath = C:\Users\Rotciv\Dropbox\Developed Apps\LEDColor\Images\LinkOffLightMode.png
+		PartialPath = Images\LinkOffLightMode.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = 200.00
+			Orientation = Any
+			Platform = 15
+			PPI = 72
+			VSize = 200.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = 200.00
+			Orientation = Any
+			Platform = 15
+			PPI = 144
+			VSize = 200.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = 200.00
+			Orientation = Any
+			Platform = 15
+			PPI = 216
+			VSize = 200.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+End Image
+#tag EndMultiImage
