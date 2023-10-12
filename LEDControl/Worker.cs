@@ -1,6 +1,5 @@
 ﻿using OpenLibSys;
 using System;
-using System.Data.OleDb;
 using System.Threading;
 
 namespace LEDControl
@@ -15,43 +14,33 @@ namespace LEDControl
         const uint WR_EC = 0x81;   // Write Embedded Controller
 
         private readonly Ols ols = new Ols();
-
-        public void SetPixel(uint js, uint position, uint[] color)
+        public void SetColor(uint js, uint[] color)
         {
-            if (ols.GetStatus() != (uint)Ols.Status.NO_ERROR) return;
-            if (ols.GetDllStatus() != (uint)Ols.OlsDllStatus.OLS_DLL_NO_ERROR) return;
-            
-            ECCommand(js, position * 3, color[0]);
-            ECCommand(js, position * 3 + 1, color[1]);
-            ECCommand(js, position * 3 + 2, color[2]);
+            uint[] zones = new uint[]{1, 2, 3, 4};
+            for (uint i = 0; i < 3; i++)
+            {
+                for (uint zone = 0; zone < 4; zone++)
+                {
+                    uint ZoneColor = zones[zone] * 3 + i;
+                    uint Intensity = color[i] * 100 / 200;
+                    SetLED(js, ZoneColor, Intensity);
+                }
+            }
         }
-
-        private void ECCommand(uint command, uint parameter1, uint parameter2)
+        public void SetLED(uint js, uint zone, uint brightness)
         {
-            ECRAMWrite(0x6d, command);
-            ECRAMWrite(0xb1, parameter1);
-            ECRAMWrite(0xb2, parameter2);
+            ECRAMWrite(0x6d, js);
+            ECRAMWrite(0xb1, zone);
+            ECRAMWrite(0xb2, brightness);
             ECRAMWrite(0xbf, 0x10);
-            Thread.Sleep(10);
             ECRAMWrite(0xbf, 0xff);
-            Thread.Sleep(10);
         }
-
-        public void ECRAMDone()
-        {
-            ECRAMWrite(0xbf, 0x10);
-            Thread.Sleep(10);
-            ECRAMWrite(0xbf, 0xff);
-            Thread.Sleep(10);
-        }
-
         private void ECRAMWrite(uint address, uint data)
         {
             SendECCommand(WR_EC);
             SendECData(address);
             SendECData(data);
         }
-
         private void SendECCommand(uint command)
         {
             if (ECReady())
@@ -59,7 +48,6 @@ namespace LEDControl
                 OlsWrite(EC_SC, command);
             }
         }
-
         private void SendECData(uint data)
         {
             if (ECReady())
@@ -67,7 +55,6 @@ namespace LEDControl
                 OlsWrite(EC_DATA, data);
             }
         }
-
         private bool ECReady()
         {
             var timeout = DateTime.Now.Add(TimeSpan.FromMilliseconds(50));
@@ -83,12 +70,10 @@ namespace LEDControl
             Console.WriteLine("EC not ready!");
             return false;
         }
-
         private void OlsWrite(uint port, uint value)
         {
             ols.WriteIoPortByte((ushort)port, (byte)value);
         }
-
         private uint OlsRead(uint port)
         {
             return ols.ReadIoPortByte((ushort)port);

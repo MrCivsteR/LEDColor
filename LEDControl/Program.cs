@@ -14,6 +14,7 @@ namespace LEDControl
 {
     internal class Program
     {
+        public static Worker worker = new Worker();
         static void Main(string[] args)
         {
             if (args == null || args.Length == 0)
@@ -51,19 +52,17 @@ namespace LEDControl
 
             var lines = File.ReadLines(filePath);
 
+            worker.SetLED(0x03, 0x02, 0x07);
             foreach (var line in lines)
             {
                 string[] args = line.Split(' ');
                 VerifyArgs(args);
             }
+            worker.SetLED(0x03, 0x02, 0x90);
         }
         public static void SetJoyStick(uint js, uint[] color)
         {
-            Worker worker = new Worker();       
-            worker.SetPixel(js, 1, color);
-            worker.SetPixel(js, 2, color);
-            worker.SetPixel(js, 3, color);
-            worker.SetPixel(js, 4, color);
+            worker.SetColor(js, color);
         }
         public static uint Clamp(string arg, uint min, uint max)
         {
