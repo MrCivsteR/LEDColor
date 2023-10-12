@@ -1,8 +1,8 @@
 Builds - LEDColor/
 DebugLEDColor/
-bin/
-obj/
+/LEDControl/bin/
+/LEDControl/obj/
 install/
-.vs/
+/LEDControl/.vs/
 *.user
 *Backup.csproj
