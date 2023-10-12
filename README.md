@@ -1,2 +1,2 @@
 # LEDColor
- To control RGB LEDs on handheld devices
+ To control RGB LEDs on Ayaneo devices
