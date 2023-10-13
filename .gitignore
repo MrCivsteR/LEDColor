@@ -2,6 +2,7 @@ Builds - LEDColor/
 DebugLEDColor/
 LEDControl/bin/
 LEDControl/obj/
+Inno/Output/
 install/
 LEDControl/.vs/
 *.user
