@@ -6,3 +6,4 @@ install/
 LEDControl/.vs/
 *.user
 *Backup.csproj
+*.xojo_uistate
