@@ -1,7 +1,7 @@
 #tag Class
 Protected Class DragCanvas
 Inherits DesktopCanvas
-	#tag CompatibilityFlags = (TargetDesktop and (Target32Bit or Target64Bit))
+	#tag CompatibilityFlags = ( TargetDesktop and ( Target32Bit or Target64Bit ) )
 	#tag Event
 		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  'user clicked canvas
@@ -98,7 +98,7 @@ Inherits DesktopCanvas
 		  DrawWhite(g) 'saturation layer
 		  DrawBlack(g) 'value layer
 		  
-		  For Each picker As Picker In Pickers
+		  for each picker as Picker in Pickers
 		    
 		    'limit picker to canvas bounds
 		    if picker.x + PickerSize + 2 > g.Width then picker.x = g.Width - (PickerSize + BorderWidth)
@@ -109,7 +109,7 @@ Inherits DesktopCanvas
 		    
 		    if initStart then 'initial startup run
 		      'compare loaded color with current position color
-		      'save parameters and colorinfo file if colors are different
+		      'save parameters and colorinfo if colors are different
 		      select case picker.PickLabel
 		      case "L"
 		        initLColor = picker.PickColor
@@ -127,7 +127,7 @@ Inherits DesktopCanvas
 		    
 		    g.DrawPicture(picker.Image, picker.x, picker.y)
 		    
-		  Next
+		  next
 		  
 		  MainWindow.ColorLeft.Refresh(True)
 		  MainWindow.ColorRight.Refresh(True)

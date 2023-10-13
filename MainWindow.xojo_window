@@ -51,7 +51,7 @@ Begin DesktopWindow MainWindow
       Visible         =   True
       Width           =   560
    End
-   Begin DesktopCanvas ColorLeft
+   Begin ColorDisplay ColorLeft
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   True
@@ -76,7 +76,7 @@ Begin DesktopWindow MainWindow
       Visible         =   True
       Width           =   160
    End
-   Begin DesktopCanvas ColorRight
+   Begin ColorDisplay ColorRight
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   True
@@ -101,7 +101,7 @@ Begin DesktopWindow MainWindow
       Visible         =   True
       Width           =   160
    End
-   Begin DesktopLabel Label1
+   Begin DesktopLabel DebugLabel
       AllowAutoDeactivate=   True
       Bold            =   False
       Enabled         =   True
@@ -134,6 +134,7 @@ Begin DesktopWindow MainWindow
       Width           =   216
    End
    Begin DesktopXAMLContainer XAMLRing
+      Active          =   False
       AllowAutoDeactivate=   True
       Content         =   "<winui:ProgressRing IsActive='True' />\r"
       Enabled         =   True
@@ -146,14 +147,20 @@ Begin DesktopWindow MainWindow
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      PanelIndex      =   0
       Scope           =   0
       TabIndex        =   15
       TabPanelIndex   =   0
+      TabStop         =   True
       Tooltip         =   ""
       Top             =   274
       Transparent     =   False
       Visible         =   False
       Width           =   50
+      _mIndex         =   0
+      _mInitialParent =   ""
+      _mName          =   ""
+      _mPanelIndex    =   0
    End
 End
 #tag EndDesktopWindow
@@ -164,7 +171,7 @@ End
 		  OpenParameters
 		  ReadParameters
 		  SetupCanvas
-		  System.DebugLog "Started..."
+		  #if DebugBuild then System.DebugLog "Started..."
 		End Sub
 	#tag EndEvent
 
@@ -174,7 +181,7 @@ End
 		  
 		  if not initStart then
 		    SetNewColor
-		    System.DebugLog "Resized"
+		    #if DebugBuild then System.DebugLog "Resized"
 		  end if
 		  
 		  initStart = False
@@ -193,7 +200,7 @@ End
 		      picker.PickColor = GetColor(picker.x, picker.y, width, height)
 		    end if
 		  next
-		  System.DebugLog "Resizing..."
+		  #if DebugBuild then System.DebugLog "Resizing..."
 		End Sub
 	#tag EndEvent
 
@@ -243,7 +250,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function FillColor(g as Graphics, picker as Picker) As Color
+		Function FillColor(g as Graphics, picker as Picker, showInfo as Boolean) As Color
 		  var centerX, centerY, radius, line1X, line1Y, line2X, line2Y as Integer
 		  var rStr, gStr, bStr, line1, line2 as String
 		  var currentColor as Color
@@ -251,9 +258,6 @@ End
 		  radius = PickerSize/2
 		  
 		  currentColor = picker.PickColor
-		  rStr = currentColor.Red.ToString
-		  gStr = currentColor.Green.ToString
-		  bStr = currentColor.Blue.ToString
 		  
 		  centerX = picker.x + radius
 		  centerY = picker.y + radius
@@ -261,23 +265,29 @@ End
 		  g.DrawingColor = currentColor
 		  g.FillRoundRectangle(0, 0, g.Width, g.Height-1, radius, radius)
 		  
-		  line1 = Right(currentColor.ToString, 6) 'hex value
-		  line2 = _ 'rgb value
-		  "R:" + rStr + ", " + _
-		  "G:" + gStr + ", " + _
-		  "B:" + bStr
-		  
-		  g.DrawingColor = InvertColor(currentColor)
-		  g.Bold = True
-		  
-		  line1X = 0.5 * (g.Width - g.TextWidth (line1))
-		  line1Y = 0.5 * (g.height - (g.TextHeight*2)) + g.TextAscent
-		  
-		  line2X = 0.5 * (g.Width - g.TextWidth (line2))
-		  line2Y = 0.5 * (g.height) + g.TextAscent
-		  
-		  g.DrawText(line1, line1X, line1Y)
-		  g.DrawText(line2, line2X, line2Y)
+		  if showInfo or DebugBuild then
+		    rStr = currentColor.Red.ToString
+		    gStr = currentColor.Green.ToString
+		    bStr = currentColor.Blue.ToString
+		    
+		    line1 = Right(currentColor.ToString, 6) 'hex value
+		    line2 = _ 'rgb value
+		    "R:" + rStr + ", " + _
+		    "G:" + gStr + ", " + _
+		    "B:" + bStr
+		    
+		    g.DrawingColor = InvertColor(currentColor)
+		    g.Bold = True
+		    
+		    line1X = 0.5 * (g.Width - g.TextWidth (line1))
+		    line1Y = 0.5 * (g.height - (g.TextHeight*2)) + g.TextAscent
+		    
+		    line2X = 0.5 * (g.Width - g.TextWidth (line2))
+		    line2Y = 0.5 * (g.height) + g.TextAscent
+		    
+		    g.DrawText(line1, line1X, line1Y)
+		    g.DrawText(line2, line2X, line2Y)
+		  end if
 		  
 		  return currentColor
 		End Function
@@ -321,63 +331,6 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ParseLine(line as String)
-		  var args() as String
-		  var r, g, b as Integer
-		  
-		  r = 0
-		  b = 0
-		  g = 0
-		  args = line.Split(" ")
-		  
-		  if args(0).Length > 1 then
-		    args(0) = args(0).RightBytes(1)
-		  end if
-		  
-		  if args.Count > 1 then
-		    r = ClampInt(args(1).ToInteger, 0, 255)
-		  end if
-		  
-		  if args.Count > 2 then
-		    g = ClampInt(args(2).ToInteger, 0, 255)
-		  end if
-		  
-		  if args.Count > 3 then
-		    b = ClampInt(args(3).ToInteger, 0, 255)
-		  end if
-		  
-		  Select case args(0).ToInteger
-		  case 1
-		    RGBLeft = Color.RGB(r, g, b)
-		  case 2
-		    RGBRight = Color.RGB(r, g, b)
-		  case 3
-		    RGBLeft = Color.RGB(r, g, b)
-		    RGBRight = Color.RGB(r, g, b)
-		  End Select
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub ReadColorInfo()
-		  var location, file as FolderItem
-		  
-		  location = SpecialFolder.Preferences.Child("LEDColor")
-		  file = location.Child("ColorInfo.txt")
-		  
-		  if file <> nil and file.Exists then
-		    var input as TextInputStream
-		    input = TextInputStream.Open(file)
-		    input.Encoding = Encodings.ASCII
-		    while not input.EndOfFile
-		      ParseLine(input.ReadLine)
-		    wend
-		    input.Close
-		  end if
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub ReadParameters()
 		  if Parameters = Nil then return
 		  
@@ -396,7 +349,6 @@ End
 		      
 		      MainCanvas.Pickers.Add(picker)
 		    next row
-		    
 		  catch e as DatabaseException
 		    System.DebugLog "SQLite Error: " + e.Message
 		  end try
@@ -432,10 +384,11 @@ End
 		  next picker
 		  
 		  WriteColorInfo
-		  RunLEDControl
 		  
 		  #if DebugBuild
 		    ShowDebugInfo
+		  #else
+		    RunLEDControl
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -500,7 +453,7 @@ End
 		    end select
 		  next picker
 		  
-		  Label1.Text = line1 + line2
+		  DebugLabel.Text = line1 + line2
 		End Sub
 	#tag EndMethod
 
@@ -547,14 +500,16 @@ End
 		      if leftColor = rightColor then
 		        cmd1 = "3 " + GetRGBString(leftColor)
 		        output.WriteLine(cmd1)
-		        System.DebugLog cmd1
+		        #if DebugBuild then System.DebugLog cmd1
 		      else
 		        cmd1 = "1 " + GetRGBString(leftColor)
 		        cmd2 = "2 " + GetRGBString(rightColor)
 		        output.WriteLine(cmd1)
 		        output.WriteLine(cmd2)
-		        System.DebugLog cmd1
-		        System.DebugLog cmd2
+		        #if DebugBuild then
+		          System.DebugLog cmd1
+		          System.DebugLog cmd2
+		        #endif
 		      end if
 		      output.Close
 		    catch e as IOException
@@ -591,7 +546,7 @@ End
 		  
 		  for each picker as Picker in MainCanvas.Pickers
 		    if picker.PickLabel = "L" then
-		      RGBLeft = FillColor(g, picker)
+		      RGBLeft = FillColor(g, picker, me.ShowInfo)
 		      return
 		    end if
 		  next picker
@@ -609,7 +564,7 @@ End
 		  
 		  for each picker as Picker in MainCanvas.Pickers
 		    if picker.PickLabel = "R" then
-		      RGBRight = FillColor(g, picker)
+		      RGBRight = FillColor(g, picker, me.ShowInfo)
 		      return
 		    end if
 		  next picker
