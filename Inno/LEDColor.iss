@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "LEDColor"
-#define MyAppVersion "0.1.0.0"
+#define MyAppVersion "0.1.2.0"
 #define MyAppPublisher "Mr.CivsteR"
 #define MyCopyright "Copyright © 2023"
 #define MyAppExeName "LEDColor.exe"
@@ -40,7 +40,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\Builds - LEDColor\Windows 64 bit\LEDColor\*"; Excludes: {#MyExcludes}; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\LEDControl\bin\Debug\*"; Excludes: {#MyExcludes}; DestDir: "{app}\LEDControl"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\LEDControl\bin\Release\*"; Excludes: {#MyExcludes}; DestDir: "{app}\LEDControl"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\Defaults\ColorInfo.txt"; DestDir: "{userappdata}\LEDColor"; Flags: ignoreversion
 Source: "..\Defaults\LEDColor.xml"; DestDir: "{tmp}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
@@ -50,8 +50,8 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingD
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent runascurrentuser
 Filename: "schtasks"; Parameters: "/create /tn LEDColor /xml ""{tmp}\LEDColor.xml"""
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent runascurrentuser
 
 [UninstallRun]
 Filename: "schtasks"; Parameters: "/delete /tn LEDColor /f"; RunOnceId: "DeleteSchedule"
