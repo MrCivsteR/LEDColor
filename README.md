@@ -2,7 +2,7 @@
  To control RGB LEDs on Ayaneo devices running Windows.<br />
  Should work with all Ayaneo devices except for the KUN.
 
- Provides intuitive color pickers touchscreen in mind.<br />
+ Provides intuitive color pickers with touchscreen in mind.<br />
  ![image](https://github.com/MrCivsteR/LEDColor/raw/main/Graphics/Screenshot.png)
 
  ## Credits
